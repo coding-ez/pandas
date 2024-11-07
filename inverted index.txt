@@ -1,0 +1,74 @@
+Here’s a theoretical explanation of how this code works for document retrieval using inverted files:
+
+### Step 1: Document Preprocessing and Tokenization
+
+The documents provided in the dictionary are the raw text data we want to search within. Each document is given a unique identifier (like 1, 2, 3, etc.), and the goal is to store and later retrieve them based on the keywords or terms they contain.
+
+The `preprocess` function:
+
+- Converts text to lowercase to ensure case-insensitive searching.
+- Uses regular expressions to extract words (tokens) from the text, ignoring punctuation and whitespace. For example, "This is the first document." becomes `["this", "is", "the", "first", "document"]`.
+
+### Step 2: Building the Inverted Index
+
+An **inverted index** is essentially a lookup table, mapping each unique word (or term) to the list of documents it appears in. This makes it faster to find all documents containing a specific term.
+
+In the `build_inverted_index` function:
+
+- We initialize an empty dictionary (`inverted_index`) that uses a list to store document IDs for each word.
+- For each document, we process the text and add each word to the `inverted_index`:
+    - If the word already exists, we append the document ID.
+    - If it’s a new word, we create a new list with the document ID.
+
+For example, after processing all documents, the inverted index might look like this:
+```python
+{
+    "this": [1, 2, 3],
+    "is": [1, 2, 3, 4],
+    "the": [1, 2, 3],
+    "first": [1],
+    "document": [1, 2, 3],
+    "words": [1, 2],
+    "second": [2],
+    "third": [3],
+    "different": [3],
+    "from": [3],
+    "two": [3],
+    "inverted": [4],
+    "index": [4],
+    "essential": [4],
+    "for": [4],
+    "retrieval": [4]
+}
+```
+
+### Step 3: Retrieving Documents Based on a Query
+
+The `retrieve_documents` function allows a user to search for documents containing specific keywords. The process goes like this:
+
+1. The user provides a search query, e.g., "document retrieval".
+2. The function tokenizes and preprocesses the query to extract words, just like in the documents.
+3. It then looks up each word in the `inverted_index` to find the list of documents containing that word.
+4. Using set intersection, it identifies documents that contain **all** query terms, ensuring only relevant documents are returned.
+
+For instance, if the query is `"document retrieval"`, it will:
+
+- Look up `"document"` in the index and get `[1, 2, 3]`.
+- Look up `"retrieval"` in the index and get `[4]`.
+- Find the intersection of these two lists, which is empty (no documents contain both terms).
+
+### Example Query and Output
+
+When the user enters a query such as `"inverted index"`, the retrieval function would process it as follows:
+
+- `"inverted"` is found in `[4]`, and `"index"` is also found in `[4]`.
+- The intersection result is `{4}`, so the function returns document 4 as it contains both terms.
+
+The output would then be:
+
+```plaintext
+Query: inverted index
+Matching Documents: {4}
+```
+
+This theoretical explanation demonstrates how inverted indexing enables efficient search and retrieval across documents, making it especially useful for large datasets or search engines.
